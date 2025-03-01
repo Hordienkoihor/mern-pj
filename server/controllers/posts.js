@@ -63,3 +63,15 @@ export const getAll = async (req, res) => {
         res.status(500).json({ message: 'get all posts error', error: error.message });
     }
 }
+
+// Get Post By Id
+export const getById = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate(req.params.id, {
+            $inc: {views: 1},
+        })
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ message: 'get post by id error', error: error.message });
+    }
+}

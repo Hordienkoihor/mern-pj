@@ -1,3 +1,4 @@
+import { log } from "console";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import path, {dirname} from 'path'
@@ -56,7 +57,7 @@ export const getAll = async (req, res) => {
         const posts = await Post.find().sort({createdAt: -1})
         const popularPosts = await Post.find().sort({views: -1}).limit(5)
         if(posts.length === 0){
-            return res.status(404).json({ message: 'posts not found' });
+            return res.json({ message: 'posts not found' });
         }
         res.json({ posts, popularPosts });
     } catch (error) {
@@ -73,5 +74,21 @@ export const getById = async (req, res) => {
         res.json(post);
     } catch (error) {
         res.status(500).json({ message: 'get post by id error', error: error.message });
+    }
+}
+
+// Get All Posts
+export const getMyPosts = async (req, res) => {
+    try {
+        
+        const user = await User.findById(req.userId)
+        const list = await Promise.all(
+            user.posts.map(post =>{
+                return Post.findById(post._id)
+            })
+        )
+        res.json(list);
+    } catch (error) {
+        res.status(500).json({ message: 'get my posts error', error: error.message });
     }
 }

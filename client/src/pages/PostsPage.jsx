@@ -1,11 +1,13 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-// import { PostItem } from '../components/PostItem'
+import { PostItem } from '../components/PostItem'
 import axios from '../utils/axios'
 
 export const PostsPage = () => {
     const [posts, setPosts] = useState([])
+
+    
 
     const fetchMyPosts = async () => {
         try {
@@ -16,15 +18,24 @@ export const PostsPage = () => {
         }
     }
 
+
     useEffect(() => {
         fetchMyPosts()
     }, [])
 
+    if (!posts) {
+        return (
+            <div className='text-xl text-center text-white py-10'>
+                Loading...
+            </div>
+        )
+    }
+    
     return (
         <div className='w-1/2 mx-auto py-10 flex flex-col gap-10'>
-            {/* {posts?.map((post, idx) => (
+            {posts?.map((post, idx) => (
                 <PostItem post={post} key={idx} />
-            ))} */} POSTS
+            ))}
         </div>
     )
 }

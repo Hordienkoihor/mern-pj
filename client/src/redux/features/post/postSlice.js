@@ -29,7 +29,9 @@ export const getAllPosts = createAsyncThunk('post/getAllPosts', async () => {
     }
 })
 
-export const removePost = createAsyncThunk('post/removePost', async (id) => {
+export const removePost = createAsyncThunk(
+    'post/removePost', 
+    async (id) => {
     try {
         const { data } = await axios.delete(`/posts/${id}`, id)
         return data

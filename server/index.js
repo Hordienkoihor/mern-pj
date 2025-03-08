@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload"
 
 import authRouter from "./routes/auth.js"
 import postRoute from "./routes/posts.js"
+import commentRoute from "./routes/comment.js"
 
 
 const app = express()
@@ -27,6 +28,7 @@ app.use(express.static('uploads'))
 // http://localhost:3003
 app.use('/api/auth', authRouter)
 app.use('/api/posts', postRoute)
+app.use('/api/comments', commentRoute)
 
 async function start() {
     try{

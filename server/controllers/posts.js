@@ -1,5 +1,6 @@
 import { log } from "console";
 import Post from "../models/Post.js";
+import Comment from "../models/Comment.js";
 import User from "../models/User.js";
 import path, {dirname} from 'path'
 import { fileURLToPath } from 'url'
@@ -109,5 +110,43 @@ export const removePost = async (req, res) => {
         res.json({message: 'post removed'});
     } catch (error) {
         res.status(500).json({ message: 'get my posts error', error: error.message });
+    }
+}
+
+// Update Post
+export const updatePost = async (req, res) => {
+    try {
+        const {title, text, id} = req.body
+        const post = await Post.findById(id)
+        
+        if(req.files?.image){
+            let fileName = Date.now().toString() + req.files.image.name
+            const __dirname = dirname(fileURLToPath(import.meta.url))
+            req.files.image.mv(path.join(__dirname, '..', 'uploads', fileName));
+            post.imageUrl = fileName || ''
+        }
+        
+        post.title = title
+        post.text = text
+        await post.save()
+
+        res.json(post, {message: 'post updated'});
+    } catch (error) {
+        res.status(500).json({ message: 'get my posts error', error: error.message });
+    }
+}
+
+// Get Post Comments
+export const getPostComments = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
+        const list =  await Promise.all(
+            post.comments.map((comment) => {
+                return Comment.findById(comment)
+            })
+        )
+        res.json(list);
+    } catch (error) {
+        res.status(500).json({ message: 'get post comments error', error: error.message });
     }
 }
